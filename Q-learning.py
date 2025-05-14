@@ -14,18 +14,20 @@ n_acciones = len(acciones)
 
 def visualizar_entorno():
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.set_xticks(np.arange(columnas))
-    ax.set_yticks(np.arange(filas))
+    ax.set_xticks(np.arange(columnas + 1))  # +1 para incluir el último tick
+    ax.set_yticks(np.arange(filas + 1))    # +1 para incluir el último tick
+    ax.set_xlim(0, columnas)
+    ax.set_ylim(0, filas)
     ax.grid(True)
 
     for i in range(filas):
         for j in range(columnas):
             if (i, j) == inicio:
-                ax.text(j, i, 'Inicio', ha='center', va='center', fontsize=12, color='red')
+                ax.text(j + 0.5, i + 0.5, 'Inicio', ha='center', va='center', fontsize=12, color='red')
             elif (i, j) in residuos:
-                ax.text(j, i, '♻️', ha='center', va='center', fontsize=16)
+                ax.text(j + 0.5, i + 0.5, '♻️', ha='center', va='center', fontsize=16)
             elif (i, j) in zonas_toxicas:
-                ax.text(j, i, '☠️', ha='center', va='center', fontsize=16)
+                ax.text(j + 0.5, i + 0.5, '☠️', ha='center', va='center', fontsize=16)
 
     ax.invert_yaxis()
     plt.title("Mapa con residuos y zonas tóxicas")
@@ -119,25 +121,27 @@ def obtener_trayectoria(Q):
 
 def visualizar_trayectoria(trayectoria, recompensas):
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.set_xticks(np.arange(columnas))
-    ax.set_yticks(np.arange(filas))
+    ax.set_xticks(np.arange(columnas + 1))  
+    ax.set_yticks(np.arange(filas + 1))    
+    ax.set_xlim(0, columnas)
+    ax.set_ylim(0, filas)
     ax.grid(True)
 
     for i in range(filas):
         for j in range(columnas):
             if (i, j) == inicio:
-                ax.text(j, i, 'Inicio', ha='center', va='center', fontsize=12, color='red')
+                ax.text(j + 0.5, i + 0.5, 'Inicio', ha='center', va='center', fontsize=12, color='red')
             elif (i, j) in residuos:
-                ax.text(j, i, '♻️', ha='center', va='center', fontsize=16)
+                ax.text(j + 0.5, i + 0.5, '♻️', ha='center', va='center', fontsize=16)
             elif (i, j) in zonas_toxicas:
-                ax.text(j, i, '☠️', ha='center', va='center', fontsize=16)
+                ax.text(j + 0.5, i + 0.5, '☠️', ha='center', va='center', fontsize=16)
 
     for idx in range(1, len(trayectoria)):
         y1, x1 = trayectoria[idx - 1]
         y2, x2 = trayectoria[idx]
         dx, dy = x2 - x1, y2 - y1
-        ax.arrow(x1, y1, dx * 0.8, dy * 0.8, head_width=0.2, head_length=0.2, fc='green', ec='green')
-        ax.text(x2, y2, f"{recompensas[idx]:.1f}", fontsize=8, color='darkgreen')
+        ax.arrow(x1 + 0.5, y1 + 0.5, dx * 0.8, dy * 0.8, head_width=0.2, head_length=0.2, fc='green', ec='green')
+        ax.text(x2 + 0.5, y2 + 0.5, f"{recompensas[idx]:.1f}", fontsize=8, color='darkgreen')
 
     ax.invert_yaxis()
     plt.title("Trayectoria óptima recogiendo residuos")
