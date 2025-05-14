@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 
-# Configuración del entorno (según tu definición)
+
 filas, columnas = 5, 5
 inicio = (0, 0)
 residuos = [(2, 3), (3, 4), (3, 1)]
@@ -11,7 +11,7 @@ zonas_toxicas = [(1, 4), (4, 4), (1, 2)]
 acciones = ['arriba', 'abajo', 'izquierda', 'derecha']
 n_acciones = len(acciones)
 
-# Función para visualizar el entorno inicial
+
 def visualizar_entorno():
     fig, ax = plt.subplots(figsize=(6, 6))
     ax.set_xticks(np.arange(columnas))
@@ -32,7 +32,7 @@ def visualizar_entorno():
     plt.tight_layout()
     return fig
 
-# Función de recompensa
+
 def obtener_recompensa(estado):
     if estado in residuos:
         return 5
@@ -41,16 +41,16 @@ def obtener_recompensa(estado):
     else:
         return -1
 
-# Función de movimiento
+
 def mover(estado, accion):
     i, j = estado
-    if accion == 0 and i > 0:             i -= 1  # arriba
-    elif accion == 1 and i < filas - 1:   i += 1  # abajo
-    elif accion == 2 and j > 0:           j -= 1  # izquierda
-    elif accion == 3 and j < columnas - 1: j += 1  # derecha
+    if accion == 0 and i > 0:             i -= 1  #arriba
+    elif accion == 1 and i < filas - 1:   i += 1  #abajo
+    elif accion == 2 and j > 0:           j -= 1  #izquierda
+    elif accion == 3 and j < columnas - 1: j += 1  #derecha
     return (i, j)
 
-# Entrenamiento Q-learning
+
 def entrenar_q_learning(episodios=1000, alpha=0.1, gamma=0.9, epsilon=0.2):
     Q = np.zeros((filas, columnas, n_acciones))
     recompensas_totales = []
@@ -71,7 +71,7 @@ def entrenar_q_learning(episodios=1000, alpha=0.1, gamma=0.9, epsilon=0.2):
             nuevo_estado = mover(estado, accion)
             recompensa = obtener_recompensa(nuevo_estado)
 
-            # Evitar repetir recompensa de residuos ya recogidos
+            
             if nuevo_estado in residuos and nuevo_estado not in recogidos:
                 recogidos.add(nuevo_estado)
             elif nuevo_estado in residuos:
@@ -91,7 +91,6 @@ def entrenar_q_learning(episodios=1000, alpha=0.1, gamma=0.9, epsilon=0.2):
     tiempo_entrenamiento = time.time() - tiempo_inicio
     return Q, recompensas_totales, tiempo_entrenamiento
 
-# Obtener trayectoria óptima
 def obtener_trayectoria(Q):
     estado = inicio
     trayectoria = [estado]
@@ -117,14 +116,13 @@ def obtener_trayectoria(Q):
 
     return trayectoria, recompensas
 
-# Visualización de la trayectoria
+
 def visualizar_trayectoria(trayectoria, recompensas):
     fig, ax = plt.subplots(figsize=(6, 6))
     ax.set_xticks(np.arange(columnas))
     ax.set_yticks(np.arange(filas))
     ax.grid(True)
 
-    # Dibujar el entorno base
     for i in range(filas):
         for j in range(columnas):
             if (i, j) == inicio:
@@ -134,7 +132,6 @@ def visualizar_trayectoria(trayectoria, recompensas):
             elif (i, j) in zonas_toxicas:
                 ax.text(j, i, '☠️', ha='center', va='center', fontsize=16)
 
-    # Dibujar la trayectoria
     for idx in range(1, len(trayectoria)):
         y1, x1 = trayectoria[idx - 1]
         y2, x2 = trayectoria[idx]
@@ -147,7 +144,7 @@ def visualizar_trayectoria(trayectoria, recompensas):
     plt.tight_layout()
     return fig
 
-# Visualización de métricas
+
 def visualizar_metricas(recompensas, tiempo_entrenamiento):
     promedio = np.mean(recompensas)
     varianza = np.var(recompensas)
@@ -173,22 +170,21 @@ def visualizar_metricas(recompensas, tiempo_entrenamiento):
 
     return fig
 
-# --- INTERFAZ STREAMLIT ---
 
 st.title("Simulación Q-learning: Recogida de Residuos")
-st.markdown("Este entorno simula un agente que aprende a recoger residuos evitando zonas tóxicas usando **Q-learning**.")
 
-# Mostrar el entorno inicial
+
+#Mostrar mapa inicial
 st.subheader("Entorno de aprendizaje")
 fig_entorno = visualizar_entorno()
 st.pyplot(fig_entorno)
 
-# Parámetros de entrenamiento
+
 st.sidebar.header("Parámetros de entrenamiento")
-episodios = st.sidebar.slider("Episodios", 100, 5000, 1000, step=100)
-alpha = st.sidebar.slider("Tasa de aprendizaje (α)", 0.01, 1.0, 0.1, step=0.01)
-gamma = st.sidebar.slider("Factor de descuento (γ)", 0.1, 1.0, 0.9, step=0.05)
-epsilon = st.sidebar.slider("Exploración (ε)", 0.0, 1.0, 0.2, step=0.05)
+episodios = st.sidebar.slider("Episodios", 100, 500, 1000, step=100)
+alpha = st.sidebar.slider("Tasa de aprendizaje", 0.01, 1.0, 0.1, step=0.01)
+gamma = st.sidebar.slider("Factor de descuento", 0.1, 1.0, 0.9, step=0.05)
+epsilon = st.sidebar.slider("Exploración", 0.0, 1.0, 0.2, step=0.05)
 
 if st.button("Entrenar agente"):
     with st.spinner('Entrenando al agente...'):
